@@ -59,23 +59,30 @@ SKIP:
 TOKEN: /* Nombres de Comandos */
 {
 
-			<MOV:  "Mov">
-		| 	<RIGHT: "RIGHT">
-		| 	<PUT: "Put">
-		| 	<PICK: "Pick">
-		|  < POP: "Pop" >
-		|  <GO: "GO" >
-        |  < HOP:  "HOP" >		
+			<MOV:  "move"< LP>< NUM >< RP >< DP>>
+		| 	<RIGHT: "right"< LP>< RP>< DP >>
+		| 	<PUT: "Put"< LP>(< CHIPS >|< BALLOONS>)< COMA >< NUM >< RP >< DP>>
+		| 	<PICK: "Pick"< LP>(< CHIPS >|< BALLOONS>)< COMA >< NUM >< RP >< DP>>
+		|  < POP: "Pop" < LP>< NUM >< RP >< DP>>
+		|  <GO: "Go" < LP>< NUM >< COMA >< NUM >< RP >< DP>>
+        |  < HOP:  "Hop" < LP>< NUM >< RP >< DP>>		
 
 }
 
 TOKEN:
 {
-		<BALLOONS:  "BALLOONS" >
-		|	<CHIPS:     "CHIPS"  >	
+		<BALLOONS:  "balloons" >
+		|	<CHIPS:     "chips"  >	
 
 }
 
+TOKEN:
+{
+  < LP: "(" >
+| < RP: ")" >
+| < DP: ":" >
+| < COMA: "," >
+}
 
 
 TOKEN :

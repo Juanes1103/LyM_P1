@@ -50,15 +50,23 @@ PARSER_END(Robot)
 
 SKIP:
 {
-	" "
-	|	"\r"
-	|	"\t"
-	| "\n"
+  " "
+| "\r"
+| "\t"
+| "\n"
 }
 
 TOKEN: /* Nombres de Comandos */
 {
+  <MOV:  "Mov">
+| <RIGHT: "RIGHT">
+| <PUT: "Put">
+| <PICK: "Pick">
+| < POP: "Pop" >
+| <GO: "GO" >
+| < HOP:  "HOP" >		
 
+/*
 			<MOV:  "move"< LP>< NUM >< RP >< DP>>
 		| 	<RIGHT: "right"< LP>< RP>< DP >>
 		| 	<PUT: "Put"< LP>(< CHIPS >|< BALLOONS>)< COMA >< NUM >< RP >< DP>>
@@ -66,13 +74,62 @@ TOKEN: /* Nombres de Comandos */
 		|  < POP: "Pop" < LP>< NUM >< RP >< DP>>
 		|  <GO: "Go" < LP>< NUM >< COMA >< NUM >< RP >< DP>>
         |  < HOP:  "Hop" < LP>< NUM >< RP >< DP>>		
+*/
 
 }
 
 TOKEN:
 {
-		<BALLOONS:  "balloons" >
-		|	<CHIPS:     "chips"  >	
+  < ASSIGNTO : "assignTo" < DP >" "< NUM >" "< COMA >" "< WORD >>
+| < GOTO : "goto"< DP >" "< N >< COMA >" "< N >>
+| < MOVE: "move" < DP >" "< N >>
+| < TURN: "turn"< DP >" "< D >>
+| < FACE: "face"< DP >" "< O >>
+| < PUTC: "put"< DP >" "< N >" "< COMA >" "< X >>
+| < PICKC: "pick"< DP >" "< N >" "< COMA >< X >>
+| < MOVETOTHE: "moveToThe"< DP >" "< N >< COMA >" "< D2 >>
+| < MOVEINDIR: "moveInDir"< DP >" "< N >< COMA >" "< O >>
+| < JUMPTOTHE: "jumpToThe"< DP >" "< N >< COMA >" "< D2 >>
+| < JUMPINDIR: "jumpInDir"< DP >" "< N >" "< COMA >" "< O >>
+| < NOP: "nop" >
+}
+
+TOKEN: /*Estructuras de Control*/
+{
+  < CONDITION: "if"< CONDICION >"then"< BLOCK1 >"else"< BLOCK2 > >
+| < LOOP: "while"< CONDICION >"do"< BLOCK > >
+| < REPEATTIMES: "repeat"< DP >" "< N >" "< BLOCK >>
+}
+
+TOKEN: /*Condiciones*/
+{
+  < FACING: "facing"< DP >" "< O >>
+| < CANPUT: "canPut"< DP >" "< N >" "< COMA >" "< X >>
+| < CANPICK: "canPick"< DP >" "< N >" "< COMA >" "< X >>
+| < CANMOVEINDIR: "canMoveInDir"< DP >" "< N >" "< COMA >" "< O >>
+| < CANJUMPINDIR: "canJumpInDir"< DP >" "< N >< COMA >" "< O >>
+| < CANMOVETOTHE: "canMoveToThe"< DP >" "< N >" "< COMA >< D2 >>
+| < CANJUMPTOTHE: "canJumpToThe"< DP >" "< N >< COMA >" "< D2 >>
+}
+
+TOKEN:
+{
+  < NOT: "not"< DP ><CONDICION >>
+}
+
+TOKEN:
+{
+  < CONDICION: (< FACING >|< CANPUT >|< CANPICK > | < CANMOVEINDIR >
+  |< CANJUMPINDIR >|< CANMOVETOTHE >|< CANJUMPTOTHE >)>
+| < BLOCK1: "b1" >
+| < BLOCK2: "b2" >
+| < BLOCK: "b" >
+}
+
+TOKEN:
+{
+  <BALLOONS:  "balloons" >
+| <CHIPS:     "chips"  >	
 
 }
 
@@ -82,14 +139,25 @@ TOKEN:
 | < RP: ")" >
 | < DP: ":" >
 | < COMA: "," >
+//| < SPACE: " " >
 }
 
+TOKEN:
+{
+  < N: (< NUM >|< VAR >)>
+| < D: "left"|"right"|"around" >
+| < O: "north"|"south"|"east"|"west" >
+| < X: (< BALLOONS >|< CHIPS >) >
+| < D2: "front"|"left"|"right"|"back" >
+}
 
 TOKEN :
 {
-		<NUM: (<DIGIT>)+ >
-		|  	<#DIGIT: ["0"-"9"] >
-        
+  < NUM: (<DIGIT>)+ >
+| < #DIGIT: ["0"-"9"] >
+| < WORD: (< LETTER >)+ >
+| < #LETTER: ["a"-"z"]|["A"-"Z"] >
+| < VAR: "variable" >
 }
 
 

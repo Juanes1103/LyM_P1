@@ -96,8 +96,8 @@ TOKEN:
 
 TOKEN: /*Estructuras de Control*/
 {
-  < CONDITION: "if"< CONDICION >"then"< BLOCK1 >"else"< BLOCK2 > >
-| < LOOP: "while"< CONDICION >"do"< BLOCK > >
+  < CONDITION: "if"(< CONDICION >|< NOT >)"then"< BLOCK1 >"else"< BLOCK2 > >
+| < LOOP: "while"(< CONDICION >|< NOT >)"do"< BLOCK > >
 | < REPEATTIMES: "repeat"< DP >" "< N >" "< BLOCK >>
 }
 

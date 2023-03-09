@@ -80,6 +80,11 @@ TOKEN: /* Nombres de Comandos */
 
 TOKEN:
 {
+  < INSTRUCCION: (< COMMAND >|< CONTROL >) >
+}
+
+TOKEN:
+{
   < ASSIGNTO : "assignTo" < DP >" "< NUM >" "< COMA >" "< WORD >>
 | < GOTO : "goto"< DP >" "< N >< COMA >" "< N >>
 | < MOVE: "move" < DP >" "< N >>
@@ -114,6 +119,15 @@ TOKEN: /*Condiciones*/
 
 TOKEN:
 {
+  < COMMAND: < ASSIGNTO >|< GOTO >|< MOVE >|< TURN >|< FACE >|< PUTC >
+			|< PICKC >|< MOVETOTHE >|< MOVEINDIR >|< JUMPTOTHE >|< JUMPINDIR >|< NOP >>
+| < CONTROL: < CONDITION >| < LOOP >|< REPEATTIMES >>
+| < PROCEDURE: < WORD >< LB >< PAM >(< WORD >< COMA >|< WORD >)+< PAM >(< INSTRUCCION >< SC >|< INSTRUCCION >)+< RB >>
+| < BLOCKINS: < LB >(< INSTRUCCION >< SC >|< INSTRUCCION >)+< RB >>
+}
+
+TOKEN:
+{
   < NOT: "not"< DP ><CONDICION >>
 }
 
@@ -137,8 +151,12 @@ TOKEN:
 {
   < LP: "(" >
 | < RP: ")" >
+| < LB: "[" >
+| < RB: "]" >
 | < DP: ":" >
 | < COMA: "," >
+| < SC: ";" >
+| < PAM: "|" >
 //| < SPACE: " " >
 }
 

@@ -66,86 +66,59 @@ TOKEN: /* Nombres de Comandos */
 | <GO: "GO" >
 | < HOP:  "HOP" >		
 
-/*
-			<MOV:  "move"< LP>< NUM >< RP >< DP>>
-		| 	<RIGHT: "right"< LP>< RP>< DP >>
-		| 	<PUT: "Put"< LP>(< CHIPS >|< BALLOONS>)< COMA >< NUM >< RP >< DP>>
-		| 	<PICK: "Pick"< LP>(< CHIPS >|< BALLOONS>)< COMA >< NUM >< RP >< DP>>
-		|  < POP: "Pop" < LP>< NUM >< RP >< DP>>
-		|  <GO: "Go" < LP>< NUM >< COMA >< NUM >< RP >< DP>>
-        |  < HOP:  "Hop" < LP>< NUM >< RP >< DP>>		
-*/
-
 }
 
 TOKEN:
 {
-  < INSTRUCCION: (< COMMAND >|< CONTROL >) >
-}
-
-TOKEN:
-{
-  < ASSIGNTO : "assignTo" < DP >" "< NUM >" "< COMA >" "< WORD >>
-| < GOTO : "goto"< DP >" "< N >< COMA >" "< N >>
-| < MOVE: "move" < DP >" "< N >>
-| < TURN: "turn"< DP >" "< D >>
-| < FACE: "face"< DP >" "< O >>
-| < PUTC: "put"< DP >" "< N >" "< COMA >" "< X >>
-| < PICKC: "pick"< DP >" "< N >" "< COMA >< X >>
-| < MOVETOTHE: "moveToThe"< DP >" "< N >< COMA >" "< D2 >>
-| < MOVEINDIR: "moveInDir"< DP >" "< N >< COMA >" "< O >>
-| < JUMPTOTHE: "jumpToThe"< DP >" "< N >< COMA >" "< D2 >>
-| < JUMPINDIR: "jumpInDir"< DP >" "< N >" "< COMA >" "< O >>
+  < ASSIGNTO : "assignTo">
+| < GOTO : "goto">
+| < MOVE: "move" >
+| < TURN: "turn">
+| < FACE: "face">
+| < PUTC: "put">
+| < PICKC: "pick">
+| < MOVETOTHE: "moveToThe">
+| < MOVEINDIR: "moveInDir">
+| < JUMPTOTHE: "jumpToThe">
+| < JUMPINDIR: "jumpInDir">
 | < NOP: "nop" >
 }
 
-TOKEN: /*Estructuras de Control*/
-{
-  < CONDITION: "if"(< CONDICION >|< NOT >)"then"< BLOCK1 >"else"< BLOCK2 > >
-| < LOOP: "while"(< CONDICION >|< NOT >)"do"< BLOCK > >
-| < REPEATTIMES: "repeat"< DP >" "< N >" "< BLOCK >>
-}
-
-TOKEN: /*Condiciones*/
-{
-  < FACING: "facing"< DP >" "< O >>
-| < CANPUT: "canPut"< DP >" "< N >" "< COMA >" "< X >>
-| < CANPICK: "canPick"< DP >" "< N >" "< COMA >" "< X >>
-| < CANMOVEINDIR: "canMoveInDir"< DP >" "< N >" "< COMA >" "< O >>
-| < CANJUMPINDIR: "canJumpInDir"< DP >" "< N >< COMA >" "< O >>
-| < CANMOVETOTHE: "canMoveToThe"< DP >" "< N >" "< COMA >< D2 >>
-| < CANJUMPTOTHE: "canJumpToThe"< DP >" "< N >< COMA >" "< D2 >>
-}
-
 TOKEN:
 {
-  < COMMAND: < ASSIGNTO >|< GOTO >|< MOVE >|< TURN >|< FACE >|< PUTC >
-			|< PICKC >|< MOVETOTHE >|< MOVEINDIR >|< JUMPTOTHE >|< JUMPINDIR >|< NOP >>
-| < CONTROL: < CONDITION >| < LOOP >|< REPEATTIMES >>
-| < PROCEDURE: < WORD >< LB >< PAM >(< WORD >< COMA >|< WORD >)+< PAM >(< INSTRUCCION >< SC >|< INSTRUCCION >)+< RB >>
-| < BLOCKINS: < LB >(< INSTRUCCION >< SC >|< INSTRUCCION >)+< RB >>
-}
-
-TOKEN:
-{
-  < NOT: "not"< DP ><CONDICION >>
-}
-
-TOKEN:
-{
-  < CONDICION: (< FACING >|< CANPUT >|< CANPICK > | < CANMOVEINDIR >
-  |< CANJUMPINDIR >|< CANMOVETOTHE >|< CANJUMPTOTHE >)>
-| < BLOCK1: "b1" >
-| < BLOCK2: "b2" >
-| < BLOCK: "b" >
+  < FACING: "facing">
+| < CANPUT: "canPut">
+| < CANPICK: "canPick">
+| < CANMOVEINDIR: "canMoveInDir">
+| < CANJUMPINDIR: "canJumpInDir">
+| < CANMOVETOTHE: "canMoveToThe">
+| < CANJUMPTOTHE: "canJumpToThe">
 }
 
 TOKEN:
 {
   <BALLOONS:  "balloons" >
-| <CHIPS:     "chips"  >	
-
+| <CHIPS:     "chips"  >
 }
+
+
+TOKEN:
+{
+  < IF : "if">
+| < THEN : "then" >
+| < ELSE : "else" >
+
+| < WHILE : "while">
+| < DO : "do" >
+
+| < REPEATTIMES: "repeat">
+}
+
+TOKEN:
+{
+  < NOT: "not">
+}
+
 
 TOKEN:
 {
@@ -162,8 +135,7 @@ TOKEN:
 
 TOKEN:
 {
-  < N: (< NUM >|< VAR >)>
-| < D: "left"|"right"|"around" >
+  < D: "left"|"right"|"around" >
 | < O: "north"|"south"|"east"|"west" >
 | < X: (< BALLOONS >|< CHIPS >) >
 | < D2: "front"|"left"|"right"|"back" >
@@ -175,7 +147,6 @@ TOKEN :
 | < #DIGIT: ["0"-"9"] >
 | < WORD: (< LETTER >)+ >
 | < #LETTER: ["a"-"z"]|["A"-"Z"] >
-| < VAR: "variable" >
 }
 
 
@@ -190,7 +161,8 @@ TOKEN :
 
 	
 	{
-		(		  (
+		(
+		  (
 		   <RIGHT> "(" ")" {world.turnRight();salida = "Command: Turnright";}
 		| 	<MOV>  "(" x=num() ")" {world.moveForward(x,false);salida = "Command: Moveforward ";}  
 		| 	<HOP>  "(" x=num() ")" {world.moveForward(x,true);salida = "Command:Jumpforward ";}
@@ -198,6 +170,31 @@ TOKEN :
 		|  <PUT> "("  put() ")"					  			
 		|  <PICK> "(" get()  ")"	
 	    |  < POP > "(" x=num() ")" {world.popBalloons(x); salida = "Comando:  Pop";}
+	    | < ASSIGNTO >":"x=num()","< WORD >
+	    | < GOTO >":"(< NUM >|< WORD >)","(< NUM >|< WORD >)
+	    | < MOVE >":"(< NUM >|< WORD >)
+	    | < TURN >< DP >< D >
+	    | < FACE >":"< O >
+	    | < PUTC >": "(< NUM >|< WORD >)","< X >
+	    | < PICKC >":"(< NUM >|< WORD >)","< X >
+	    | < MOVETOTHE >":"(< NUM >|< WORD >)","< D2 >
+	    | < MOVEINDIR >":"(< NUM >|< WORD >)","< O >
+	    | < JUMPTOTHE >":"(< NUM >|< WORD >)","< D2 >
+	    | < JUMPINDIR >":"(< NUM >|< WORD >)","< O >
+	    | < NOP >
+
+	    | < FACING >":"< O >
+	    | < CANPUT >":"(< NUM >|< WORD >)","< X >
+	    | < CANPICK >":"(< NUM >|< WORD >)","< X >
+	    | < CANMOVEINDIR >":"(< NUM >|< WORD >)","< O >
+	    | < CANJUMPINDIR >":"(< NUM >|< WORD >)","< O >
+	    | < CANMOVETOTHE >":"(< NUM >|< WORD >)","< D2 >
+	    | < CANJUMPTOTHE >":"(< NUM >|< WORD >)","< D2 >
+
+	    | < IF >":"(condition()|not())<THEN >":"(comando())< ELSE >":"(comando()) 
+	    | < WHILE >(condition()|not()) < DO >(comando())
+	    | < REPEATTIMES >":"(< NUM >|< WORD >) (comando())
+
 		) ";" 
 
 		{
@@ -212,6 +209,22 @@ TOKEN :
 		})+
 
     	| <EOF> {return false;} 
+	}
+
+	void condition():
+	{
+	}
+	{
+	  (	    < FACING > | < CANPUT >| < CANPICK >| < CANMOVEINDIR>
+	    |< CANJUMPINDIR>| < CANMOVETOTHE>| < CANJUMPTOTHE>
+	  )
+	}
+
+	void not():
+	{
+	}
+	{
+	  < NOT >condition()
 	}
 
 	void put() :
@@ -234,6 +247,24 @@ TOKEN :
 
 	}
 
+	void comando():
+	{
+	}
+	{
+	 (	   < ASSIGNTO >|< GOTO >|< MOVE >|< TURN >|< FACE >|< PUTC >
+	   |< PICKC >|< MOVETOTHE >|< MOVEINDIR >|< JUMPTOTHE >|< JUMPINDIR >|< NOP >
+	   
+	 ) 
+	}
+
+	void nop():
+	{
+	}
+	{
+	  (
+	    ""	  )
+	}
+
 	
 	
 
@@ -242,6 +273,7 @@ TOKEN :
 	 * @return the corresponding value of the string
 	 * @error  corresponding value is too large
 	 */
+
 
 	int num() throws Error:
 	{	

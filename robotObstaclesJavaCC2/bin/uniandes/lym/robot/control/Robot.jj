@@ -135,10 +135,15 @@ TOKEN:
 
 TOKEN:
 {
-  < D: "left"|"right"|"around" >
-| < O: "north"|"south"|"east"|"west" >
-| < X: (< BALLOONS >|< CHIPS >) >
-| < D2: "front"|"left"|"right"|"back" >
+  < LEFT: "left" >
+| < RIGHTD: "right" >
+| < AROUND: "around" >
+| < NORTH: "north" >
+| < SOUTH: "south" >
+| < WEST: "west" >
+| < EAST: "east" >
+| < FRONT: "front" >
+| < BACK: "back" >
 }
 
 TOKEN :
@@ -156,6 +161,7 @@ TOKEN :
 	{	
 		
 		int x,y;
+		String dir;
 		salida=new String();	
 	}
 
@@ -171,29 +177,31 @@ TOKEN :
 		|  <PICK> "(" get()  ")"	
 	    |  < POP > "(" x=num() ")" {world.popBalloons(x); salida = "Comando:  Pop";}
 	    | < ASSIGNTO >":"x=num()","< WORD >
-	    | < GOTO >":"(< NUM >|< WORD >)","(< NUM >|< WORD >)
-	    | < MOVE >":"(< NUM >|< WORD >)
-	    | < TURN >< DP >< D >
-	    | < FACE >":"< O >
-	    | < PUTC >": "(< NUM >|< WORD >)","< X >
-	    | < PICKC >":"(< NUM >|< WORD >)","< X >
-	    | < MOVETOTHE >":"(< NUM >|< WORD >)","< D2 >
-	    | < MOVEINDIR >":"(< NUM >|< WORD >)","< O >
-	    | < JUMPTOTHE >":"(< NUM >|< WORD >)","< D2 >
-	    | < JUMPINDIR >":"(< NUM >|< WORD >)","< O >
+	    | < GOTO > ":" quantity() "," quantity()
+	    | < MOVE >":"quantity()
+	    | < TURN > ":" dir=direction() {world.turn(dir);salida = "Command: Turn";}
+	    | < FACE >":" cardinal()
+	    | < PUTC >": "quantity()","object()
+	    | < PICKC >":"quantity()","object()
+	    | < MOVETOTHE >":"quantity()","direccion2()
+	    | < MOVEINDIR >":"quantity()","cardinal()
+	    | < JUMPTOTHE >":"quantity()","direccion2()
+	    | < JUMPINDIR >":"quantity()","cardinal()
 	    | < NOP >
 
-	    | < FACING >":"< O >
-	    | < CANPUT >":"(< NUM >|< WORD >)","< X >
-	    | < CANPICK >":"(< NUM >|< WORD >)","< X >
-	    | < CANMOVEINDIR >":"(< NUM >|< WORD >)","< O >
-	    | < CANJUMPINDIR >":"(< NUM >|< WORD >)","< O >
-	    | < CANMOVETOTHE >":"(< NUM >|< WORD >)","< D2 >
-	    | < CANJUMPTOTHE >":"(< NUM >|< WORD >)","< D2 >
+	    | < FACING >":"cardinal()
+	    | < CANPUT >":"quantity()","object()
+	    | < CANPICK >":"quantity()","object()
+	    | < CANMOVEINDIR >":"quantity()","cardinal()
+	    | < CANJUMPINDIR >":"quantity()","cardinal()
+	    | < CANMOVETOTHE >":"quantity()","direccion2()
+	    | < CANJUMPTOTHE >":"quantity()","direccion2()
 
 	    | < IF >":"(condition()|not())<THEN >":"(comando())< ELSE >":"(comando()) 
 	    | < WHILE >(condition()|not()) < DO >(comando())
-	    | < REPEATTIMES >":"(< NUM >|< WORD >) (comando())
+	    | < REPEATTIMES >":"quantity() (comando()
+
+	    	)
 
 		) ";" 
 
@@ -209,6 +217,56 @@ TOKEN :
 		})+
 
     	| <EOF> {return false;} 
+	}
+
+	void quantity():
+	{
+	}
+	{
+	  (num()|< WORD >)
+	}
+
+	void object():
+	{
+	}
+	{
+	  (< BALLOONS >|< CHIPS >)
+	}
+
+	String direction():
+	{
+	 String dir = "";
+	}
+	{
+	  (	    < AROUND >|< LEFT >|< RIGHT >
+	  )
+	  {
+			try 
+			{
+				dir = (token.image);
+			} 
+			catch (NumberFormatException ee) 
+			{
+				throw new Error("Number out of bounds: "+token.image+" !!");
+			}
+			return dir;
+		}
+	}
+
+	void cardinal():
+	{
+	}
+	{
+	  (	    < NORTH >|< SOUTH >|< WEST >|< EAST >
+	  )
+	}
+
+	void direccion2():
+	{
+	}
+	{
+	  (
+	    < FRONT >|< BACK >|< LEFT >|< RIGHT >	  )
 	}
 
 	void condition():

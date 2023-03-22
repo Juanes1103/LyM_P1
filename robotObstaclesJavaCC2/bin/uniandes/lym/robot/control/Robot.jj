@@ -197,11 +197,11 @@ TOKEN :
 	    | < CANMOVETOTHE >":"quantity()","direccion2()
 	    | < CANJUMPTOTHE >":"quantity()","direccion2()
 
-	    | < IF >":"(condition()|not())<THEN >":"(comando())< ELSE >":"(comando()) 
-	    | < WHILE >(condition()|not()) < DO >(comando())
-	    | < REPEATTIMES >":"quantity() (comando()
+	    | < WORD >":"(comando()|< NUM >|< WORD >)+
 
-	    	)
+	    | < IF >":"(condition()|not()|< NUM >|< WORD >|opciones())+<THEN >":"(comando()|< NUM >|< WORD >)+< ELSE >":"(comando()|< NUM >|< WORD >)+ 
+	    | < WHILE >(condition()|not()|< NUM >|< WORD >|opciones())+ < DO >(comando()|< NUM >|< WORD >)+
+	    | < REPEATTIMES >":"quantity()(comando()|< NUM >|< WORD >)+
 
 		) ";" 
 
@@ -217,6 +217,13 @@ TOKEN :
 		})+
 
     	| <EOF> {return false;} 
+	}
+
+	void opciones():
+	{
+	}
+	{
+	  ("&&"|"||"|"!")
 	}
 
 	void quantity():

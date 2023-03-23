@@ -222,16 +222,6 @@ public class RobotWorldDec extends RobotWorld {
 		else
 			moveHorizontally(-pasos, jump);
 	}
-	
-	public void turn(String dir) throws Error {
-		if(dir == "left") {
-			System.out.println("Se ha rotado a la Izquierda");
-		} else if (dir == "right"){
-			System.out.println("Se ha rotado a la Derecha");
-		} else {
-			System.out.println("Se ha rotado 180°");
-		}
-	}
 
 }
 

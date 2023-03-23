@@ -31,12 +31,17 @@ import java.awt.Point;
 import java.io.*;
 import java.util.Vector;
 import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @SuppressWarnings("serial")
 public class Robot 
 {
+	public ArrayList<String> var = new ArrayList<String>();
+	public ArrayList<String> funct = new ArrayList<String>();
 
-
+	public HashMap<String,Integer> declarations = new HashMap<String,Integer>();
+	
 	private RobotWorldDec world;
 	
 	
@@ -119,6 +124,12 @@ TOKEN:
   < NOT: "not">
 }
 
+TOKEN:
+{
+  < ROBOT : "ROBOT_R" >
+| < VARIABLES : "VARS" >
+| < PROCEDURES : "PROCS" >
+}
 
 TOKEN:
 {
@@ -162,12 +173,17 @@ TOKEN :
 		
 		int x,y;
 		String dir;
+		String obj;
 		salida=new String();	
 	}
 
 	
 	{
 		(
+		< ROBOT >
+		< VARIABLES >(< WORD >|< COMA >)+";"
+		< PROCEDURES >
+		
 		  (
 		   <RIGHT> "(" ")" {world.turnRight();salida = "Command: Turnright";}
 		| 	<MOV>  "(" x=num() ")" {world.moveForward(x,false);salida = "Command: Moveforward ";}  
@@ -176,34 +192,33 @@ TOKEN :
 		|  <PUT> "("  put() ")"					  			
 		|  <PICK> "(" get()  ")"	
 	    |  < POP > "(" x=num() ")" {world.popBalloons(x); salida = "Comando:  Pop";}
+
 	    | < ASSIGNTO >":"x=num()","< WORD >
-	    | < GOTO > ":" quantity() "," quantity()
-	    | < MOVE >":"quantity()
-	    | < TURN > ":" dir=direction() {world.turn(dir);salida = "Command: Turn";}
-	    | < FACE >":" cardinal()
-	    | < PUTC >":"quantity()","object()
-	    | < PICKC >":"quantity()","object()
-	    | < MOVETOTHE >":"quantity()","direccion2()
-	    | < MOVEINDIR >":"quantity()","cardinal()
-	    | < JUMPTOTHE >":"quantity()","direccion2()
-	    | < JUMPINDIR >":"quantity()","cardinal()
+	    | < GOTO > ":" x=quantity() "," y=quantity() { world.moveHorizontally(x,false);salida = "Command GOTO";}{ world.moveVertically(y,false);salida = "Command GOTO";}
+	    | < MOVE >":"x=quantity() { world.moveForward(x,false);salida = "Command: Move";}
+	    | < TURN > ":" dir=direction()
+	    | < FACE >":" dir=cardinal()
+	    | < PUTC >":"x=quantity()","obj=object()
+	    | < PICKC >":"x=quantity()","obj=object()
+	    | < MOVETOTHE >":"x=quantity()","dir=direccion2()
+	    | < MOVEINDIR >":"x=quantity()","dir=cardinal()
+	    | < JUMPTOTHE >":"x=quantity()","dir=direccion2()
+	    | < JUMPINDIR >":"x=quantity()","dir=cardinal()
 	    | < NOP >
 
-	    | < FACING >":"cardinal()
-	    | < CANPUT >":"quantity()","object()
-	    | < CANPICK >":"quantity()","object()
-	    | < CANMOVEINDIR >":"quantity()","cardinal()
-	    | < CANJUMPINDIR >":"quantity()","cardinal()
-	    | < CANMOVETOTHE >":"quantity()","direccion2()
-	    | < CANJUMPTOTHE >":"quantity()","direccion2()
-
-	    | < WORD >":"(comando()|< NUM >|< WORD >)+
+	    | < FACING >":"dir=cardinal()
+	    | < CANPUT >":"x=quantity()","obj=object()
+	    | < CANPICK >":"x=quantity()","obj=object()
+	    | < CANMOVEINDIR >":"x=quantity()","dir=cardinal()
+	    | < CANJUMPINDIR >":"x=quantity()","dir=cardinal()
+	    | < CANMOVETOTHE >":"x=quantity()","dir=direccion2()
+	    | < CANJUMPTOTHE >":"x=quantity()","dir=direccion2()
 
 	    | < IF >":"(condition()|not()|< NUM >|< WORD >|opciones())+<THEN >":"(comando()|< NUM >|< WORD >)+< ELSE >":"(comando()|< NUM >|< WORD >)+ 
 	    | < WHILE >(condition()|not()|< NUM >|< WORD >|opciones())+ < DO >(comando()|< NUM >|< WORD >)+
 	    | < REPEATTIMES >":"quantity()(comando()|< NUM >|< WORD >)+
 
-		) ";" 
+		)+ ";" 
 
 		{
 		    try {
@@ -219,6 +234,7 @@ TOKEN :
     	| <EOF> {return false;} 
 	}
 
+
 	void opciones():
 	{
 	}
@@ -226,14 +242,15 @@ TOKEN :
 	  ("&&"|"||"|"!")
 	}
 
-	void quantity():
+	int quantity():
 	{
+	  num();
 	}
 	{
 	  (num()|< WORD >)
 	}
 
-	void object():
+	String object():
 	{
 	}
 	{
@@ -242,7 +259,12 @@ TOKEN :
 
 	String direction():
 	{
-	 String dir = "";
+	 if(dir == "around")
+	  {world.turnRight();world.turnRight();salida = "Command: Turnright";}
+	  else if(dir == "left")
+	  {world.turnRight();world.turnRight();world.turnRight();salida = "Command: Turnright";}
+	  else
+	  {world.turnRight();salida = "Command: Turnright";}
 	}
 	{
 	  (	    < AROUND >|< LEFT >|< RIGHTD >
@@ -260,16 +282,34 @@ TOKEN :
 		}
 	}
 
-	void cardinal():
+	String cardinal():
 	{
+	  world.getFacing();
+	  if(dir == "north")
+	  { ;}
+	  else if(dir == "south")
+	  {world.turnRight();world.turnRight();world.turnRight();salida = "Command: Turnright";}
+	  else if(dir == "west")
+	  {world.turnRight();world.turnRight();salida = "Command: Turnright";}
+	  else
+	  {world.turnRight();salida = "Command: Turnright";}
 	}
 	{
 	  (	    < NORTH >|< SOUTH >|< WEST >|< EAST >
 	  )
 	}
 
-	void direccion2():
+	String direccion2():
 	{
+	  if(dir == "front")
+	  { ;}
+	  else if(dir == "back")
+	  {world.turnRight();world.turnRight();salida = "Command: Turnright";}
+	  else if(dir == "left")
+	  {world.turnRight();world.turnRight();world.turnRight();salida = "Command: Turnright";}
+	  else
+	  {world.turnRight();salida = "Command: Turnright";}
+	  
 	}
 	{
 	  (

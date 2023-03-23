@@ -181,7 +181,7 @@ TOKEN :
 	    | < MOVE >":"quantity()
 	    | < TURN > ":" dir=direction() {world.turn(dir);salida = "Command: Turn";}
 	    | < FACE >":" cardinal()
-	    | < PUTC >": "quantity()","object()
+	    | < PUTC >":"quantity()","object()
 	    | < PICKC >":"quantity()","object()
 	    | < MOVETOTHE >":"quantity()","direccion2()
 	    | < MOVEINDIR >":"quantity()","cardinal()
@@ -245,7 +245,7 @@ TOKEN :
 	 String dir = "";
 	}
 	{
-	  (	    < AROUND >|< LEFT >|< RIGHT >
+	  (	    < AROUND >|< LEFT >|< RIGHTD >
 	  )
 	  {
 			try 
@@ -273,7 +273,7 @@ TOKEN :
 	}
 	{
 	  (
-	    < FRONT >|< BACK >|< LEFT >|< RIGHT >	  )
+	    < FRONT >|< BACK >|< LEFT >|< RIGHTD >	  )
 	}
 
 	void condition():

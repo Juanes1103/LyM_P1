@@ -9,6 +9,10 @@ Modificado por Silvia Takahashi
 
  **/
 
+/*
+Juan Esteban Diaz Castro - 202121646
+Camilo Linares - 202122820
+*/
 
 options 
 {
@@ -18,7 +22,7 @@ options
 	STATIC = false;
 	
 }
-   
+ 
 
 PARSER_BEGIN(Robot)
 
